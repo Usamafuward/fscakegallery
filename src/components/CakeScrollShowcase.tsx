@@ -500,7 +500,7 @@ export function CakeScrollShowcase({
                   className="flex-1 sm:flex-none max-w-[175px] sm:max-w-none px-4 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold text-xs sm:text-sm shadow-[0_10px_25px_rgba(225,29,72,0.4)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.55)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <ShoppingBag className="w-4 h-4 shrink-0" />
-                  <span>Order Cake</span>
+                  <span>Order Custom Cake</span>
                 </button>
 
                 <button
@@ -526,25 +526,10 @@ export function CakeScrollShowcase({
               style={{ pointerEvents: opacity0 > 0.3 ? "auto" : "none" }}
               className="flex flex-col items-center text-center pb-1 sm:pb-0"
             >
-              {!isInitialReady ? (
-                <div className="flex flex-col items-center gap-1.5 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-rose-200 shadow-sm text-xs font-semibold text-rose-700">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-rose-500 animate-spin" />
-                    <span>Preparing sweet cake animation...</span>
-                  </div>
-                  <div className="w-32 h-1 bg-rose-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-rose-400 to-pink-500 transition-all duration-300"
-                      style={{ width: `${Math.max(12, loadPercent)}%` }}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/85 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-700 animate-bounce">
-                  <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
-                  <span>Scroll down to watch the cake build</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/85 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-700 animate-bounce">
+                <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
+                <span>Scroll down to watch the cake build</span>
+              </div>
             </div>
           </div>
 
@@ -709,7 +694,7 @@ export function CakeScrollShowcase({
                   className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold text-xs sm:text-sm shadow-[0_8px_20px_rgba(225,29,72,0.35)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                  <span>Order Custom Cake</span>
+                  <span>Order Cake</span>
                 </button>
 
                 <button
