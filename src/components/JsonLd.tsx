@@ -66,12 +66,12 @@ export function JsonLd() {
     ],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "FS Cake Gallery Specialties",
+      "name": "FS Cake Gallery Custom Cake Services",
       "itemListElement": [
         {
           "@type": "Offer",
           "itemOffered": {
-            "@type": "Product",
+            "@type": "Service",
             "name": "Custom Birthday Cakes",
             "description": "Handcrafted celebration birthday cakes with personalized themes and flavors."
           }
@@ -79,7 +79,7 @@ export function JsonLd() {
         {
           "@type": "Offer",
           "itemOffered": {
-            "@type": "Product",
+            "@type": "Service",
             "name": "Wedding Cakes & Tiers",
             "description": "Multi-tier elegant custom wedding cakes finished with fresh florals and delicate piping."
           }
@@ -87,7 +87,7 @@ export function JsonLd() {
         {
           "@type": "Offer",
           "itemOffered": {
-            "@type": "Product",
+            "@type": "Service",
             "name": "Romantic Anniversary Cakes",
             "description": "Romantic handcrafted anniversary cakes tailored to celebrate love stories."
           }
@@ -95,7 +95,7 @@ export function JsonLd() {
         {
           "@type": "Offer",
           "itemOffered": {
-            "@type": "Product",
+            "@type": "Service",
             "name": "Korean Bento Lunchbox Cakes",
             "description": "Cute aesthetic mini bento box cakes ideal for intimate surprises."
           }
@@ -103,7 +103,7 @@ export function JsonLd() {
         {
           "@type": "Offer",
           "itemOffered": {
-            "@type": "Product",
+            "@type": "Service",
             "name": "Gourmet Floral Cupcake Sets",
             "description": "Towering swirl buttercream floral cupcakes in custom gift boxes."
           }
