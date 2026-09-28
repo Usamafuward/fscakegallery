@@ -68,12 +68,12 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
         </a>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-rose-200/80 shadow-sm">
+        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 bg-white/80 backdrop-blur-md px-2.5 lg:px-4 py-1.5 rounded-full border border-rose-200/80 shadow-sm shrink-0">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-rose-900/80 hover:text-rose-600 hover:bg-rose-50/80 rounded-full transition-all"
+              className="px-2.5 lg:px-3.5 py-1.5 text-[11px] lg:text-xs font-semibold uppercase tracking-wider text-rose-900/80 hover:text-rose-600 hover:bg-rose-50/80 rounded-full transition-all whitespace-nowrap"
             >
               {link.name}
             </a>
@@ -81,10 +81,10 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
         </nav>
 
         {/* Action Button: Order on WhatsApp / Call */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
           <a
             href={`tel:${CONTACT_INFO.phone1}`}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-full border border-rose-200 transition-colors"
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-full border border-rose-200 transition-colors"
           >
             <Phone className="w-3.5 h-3.5 text-rose-500" />
             <span className="font-mono">{CONTACT_INFO.phone1}</span>
@@ -94,7 +94,7 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
             onClick={onOpenOrder}
-            className="brush-btn-pink px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_4px_15px_rgba(225,29,72,0.3)] cursor-pointer"
+            className="brush-btn-pink px-4 lg:px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_4px_15px_rgba(225,29,72,0.3)] cursor-pointer whitespace-nowrap"
           >
             <Sparkles className="w-3.5 h-3.5" />
             Order Now

@@ -36,30 +36,30 @@ export function AboutSection() {
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-50 rounded-full blur-3xl pointer-events-none -z-10" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-5">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 lg:gap-12 items-center">
           {/* Left Column: Visual Story / Logo Emblem */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="lg:col-span-5 flex flex-col items-center"
+            className="md:col-span-5 flex flex-col items-center"
           >
-            <div className="relative w-full max-w-[340px] aspect-square rounded-3xl p-6 bg-gradient-to-br from-rose-50 via-pink-50 to-amber-50 border border-rose-200/80 shadow-[0_15px_40px_rgba(244,114,182,0.18)] flex flex-col items-center justify-center text-center">
-              <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white shadow-md mb-4 bg-white">
+            <div className="relative w-full max-w-[340px] md:max-w-full lg:max-w-[340px] aspect-square rounded-3xl p-5 sm:p-6 bg-gradient-to-br from-rose-50 via-pink-50 to-amber-50 border border-rose-200/80 shadow-[0_15px_40px_rgba(244,114,182,0.18)] flex flex-col items-center justify-center text-center">
+              <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-white shadow-md mb-3 sm:mb-4 bg-white">
                 <Image
                   src="/images/logo.jpg"
                   alt="FS Cake Gallery Logo"
                   fill
                   className="object-cover"
-                  sizes="150px"
+                  sizes="(max-width: 768px) 140px, 150px"
                 />
               </div>
 
-              <h3 className="font-heading font-bold text-xl text-rose-950 mb-1">
+              <h3 className="font-heading font-bold text-lg sm:text-xl text-rose-950 mb-1">
                 FS CAKE GALLERY
               </h3>
-              <p className="font-cursive text-xl text-rose-600 font-bold mb-3">
+              <p className="font-cursive text-lg sm:text-xl text-rose-600 font-bold mb-2 sm:mb-3">
                 “Made with love, for your sweet moments ♡”
               </p>
 
@@ -75,7 +75,7 @@ export function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="lg:col-span-7"
+            className="md:col-span-7"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider mb-4">
               <Sparkles className="w-3.5 h-3.5" />

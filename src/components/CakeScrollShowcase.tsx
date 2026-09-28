@@ -6,14 +6,11 @@ import {
   Heart,
   Sparkles,
   Phone,
-  MessageCircle,
   ShoppingBag,
   ArrowRight,
   ChevronDown,
   Layers,
   Palette,
-  CheckCircle2,
-  Bike,
   Award,
 } from "lucide-react";
 import { CONTACT_INFO } from "@/data/cakes";
@@ -109,9 +106,9 @@ export function CakeScrollShowcase({
 
     // Studio background gradient matching the photoshoot cyclorama paper exactly
     const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    bgGradient.addColorStop(0, "#f3e7d7");
-    bgGradient.addColorStop(0.5, "#eadcca");
-    bgGradient.addColorStop(1, "#ede1d1");
+    bgGradient.addColorStop(0, "#efe3cc");
+    bgGradient.addColorStop(0.5, "#f1e0cb");
+    bgGradient.addColorStop(1, "#f2e5d2");
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -130,16 +127,31 @@ export function CakeScrollShowcase({
       let heroX: number;
       let heroY: number;
 
-      if (canvasRatio > imgRatio) {
-        heroW = canvas.width;
-        heroH = canvas.width / imgRatio;
-        heroX = 0;
-        heroY = (canvas.height - heroH) / 2;
+      if (isDesktop) {
+        if (canvasRatio > imgRatio) {
+          heroW = canvas.width;
+          heroH = canvas.width / imgRatio;
+          heroX = 0;
+          heroY = (canvas.height - heroH) / 2;
+        } else {
+          heroH = canvas.height;
+          heroW = canvas.height * imgRatio;
+          heroX = (canvas.width - heroW) / 2;
+          heroY = 0;
+        }
       } else {
-        heroH = canvas.height;
-        heroW = canvas.height * imgRatio;
-        heroX = (canvas.width - heroW) / 2;
-        heroY = 0;
+        // Mobile & Tablet: Plate width scaled proportionally (responsive for both small mobile and medium tablets)
+        // Plate source width = 804, center = 979, top rim = 590, pedestal = 1005
+        const targetPlateW = canvas.width < 640
+          ? Math.max(canvas.width * 1.15, 430)
+          : Math.max(canvas.width * 0.95, 540);
+        const heroS = targetPlateW / 804;
+        heroW = imgW * heroS;
+        heroH = imgH * heroS;
+        heroX = (canvas.width / 2) - (979 * heroS);
+        // Position plate top rim right at ~55.5% of canvas height so buttons sit directly on top of the plate
+        const plateTopTargetY = Math.max(375, canvas.height * 0.555);
+        heroY = plateTopTargetY - (590 * heroS);
       }
 
       // 2. AFTER THAT: Transition & fit smoothly to the side
@@ -161,7 +173,7 @@ export function CakeScrollShowcase({
         // Position the cake in the right column
         const scaledCakeW = cakeW * sideS;
         const scaledCakeCX = cakeCX * sideS;
-        
+
         // The left column sits inside the main max-w-6xl (1152px) layout
         const layoutLeft = Math.max(16, (canvas.width - 1152) / 2 + 20);
         const cardWidth = canvas.width >= 1280 ? 490 : 450;
@@ -193,26 +205,39 @@ export function CakeScrollShowcase({
       const drawW = heroW + (sideW - heroW) * shiftRatio;
       const drawH = heroH + (sideH - heroH) * shiftRatio;
 
-      // Seamless extension: Extend the actual photo cyclorama left & right edges across any exposed horizontal canvas
+      // Seamless extension: Extend the actual photo cyclorama across any exposed canvas
+      // Top edge extension (column-aligned with drawX and drawW so horizontal lighting matches perfectly with 0 difference)
+      if (drawY > 0) {
+        ctx.drawImage(img, 0, 0, imgW, 4, drawX, 0, drawW, drawY + 1);
+      }
+      // Bottom edge extension (column-aligned with drawX and drawW)
+      if (drawY + drawH < canvas.height) {
+        ctx.drawImage(img, 0, imgH - 4, imgW, 4, drawX, drawY + drawH - 1, drawW, canvas.height - (drawY + drawH) + 2);
+      }
+      // Left edge extension
       if (drawX > 0) {
         ctx.drawImage(img, 0, 0, 4, imgH, 0, 0, drawX + 1, canvas.height);
       }
+      // Right edge extension
       if (drawX + drawW < canvas.width) {
         ctx.drawImage(img, imgW - 4, 0, 4, imgH, drawX + drawW - 1, 0, canvas.width - (drawX + drawW) + 2, canvas.height);
+      }
+      // 4 Corner extensions for full edge coverage when both horizontal and vertical margins are exposed:
+      if (drawX > 0 && drawY > 0) {
+        ctx.drawImage(img, 0, 0, 4, 4, 0, 0, drawX + 1, drawY + 1);
+      }
+      if (drawX + drawW < canvas.width && drawY > 0) {
+        ctx.drawImage(img, imgW - 4, 0, 4, 4, drawX + drawW - 1, 0, canvas.width - (drawX + drawW) + 2, drawY + 1);
+      }
+      if (drawX > 0 && drawY + drawH < canvas.height) {
+        ctx.drawImage(img, 0, imgH - 4, 4, 4, 0, drawY + drawH - 1, drawX + 1, canvas.height - (drawY + drawH) + 2);
+      }
+      if (drawX + drawW < canvas.width && drawY + drawH < canvas.height) {
+        ctx.drawImage(img, imgW - 4, imgH - 4, 4, 4, drawX + drawW - 1, drawY + drawH - 1, canvas.width - (drawX + drawW) + 2, canvas.height - (drawY + drawH) + 2);
       }
 
       // Draw the cake frame
       ctx.drawImage(img, drawX, drawY, drawW, drawH);
-
-      // On mobile, if the photo does not reach the bottom, softly melt the bottom edge into the studio background
-      if (!isDesktop && drawY + drawH < canvas.height) {
-        const fadeH = Math.min(24, drawH * 0.08);
-        const gBottom = ctx.createLinearGradient(0, drawY + drawH - fadeH, 0, drawY + drawH);
-        gBottom.addColorStop(0, "rgba(237, 225, 209, 0)");
-        gBottom.addColorStop(1, "#ede1d1");
-        ctx.fillStyle = gBottom;
-        ctx.fillRect(0, drawY + drawH - fadeH, canvas.width, fadeH + 1);
-      }
     }
   }, []);
 
@@ -426,21 +451,21 @@ export function CakeScrollShowcase({
               transform: `translateY(${(1 - opacity0) * -24}px)`,
               visibility: opacity0 > 0.005 ? "visible" : "hidden",
             }}
-            className="absolute inset-0 w-full h-full flex flex-col justify-between pt-24 pb-20 sm:pt-28 sm:pb-24 max-w-6xl mx-auto px-5 transition-none"
+            className="absolute inset-0 w-full h-full flex flex-col justify-between pt-24 pb-6 sm:pt-28 sm:pb-24 max-w-6xl mx-auto px-4 sm:px-5 transition-none"
           >
             {/* Center-Top Header */}
             <div
               style={{ pointerEvents: opacity0 > 0.3 ? "auto" : "none" }}
-              className="flex flex-col items-center text-center max-w-3xl mx-auto"
+              className="flex flex-col items-center text-center max-w-3xl mx-auto w-full"
             >
               {/* Floating Pill Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-800 mb-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-800 mb-5 sm:mb-4">
                 <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
                 <span>Homemade in Hemmathagama &amp; Thalgaspitiya</span>
               </div>
 
               {/* Logo Display */}
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full p-1 bg-gradient-to-tr from-rose-400 via-pink-200 to-rose-300 shadow-[0_8px_25px_rgba(244,114,182,0.35)] mb-3">
+              <div className="relative w-20 h-20 sm:w-20 sm:h-20 rounded-full p-1 bg-gradient-to-tr from-rose-400 via-pink-200 to-rose-300 shadow-[0_8px_25px_rgba(244,114,182,0.35)] mb-4 sm:mb-4">
                 <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white bg-rose-50">
                   <Image
                     src="/images/logo.jpg"
@@ -454,35 +479,35 @@ export function CakeScrollShowcase({
               </div>
 
               {/* Cursive Tagline */}
-              <span className="font-cursive text-2xl sm:text-3xl lg:text-4xl text-rose-600 font-bold tracking-wide drop-shadow-sm mb-1">
+              <span className="font-cursive text-2xl sm:text-3xl lg:text-4xl text-rose-600 font-bold tracking-wide drop-shadow-sm mb-3 sm:mb-1">
                 Special cake for special day
               </span>
 
               {/* Main Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-rose-950 tracking-tight leading-[1.1] mb-3">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-rose-950 tracking-tight leading-[1.1] mb-4 sm:mb-3.5">
                 FS CAKE GALLERY
               </h1>
 
-              <p className="text-rose-900/80 text-xs sm:text-sm md:text-base max-w-xl mx-auto mb-5 leading-relaxed font-medium">
-                Watch our bakers craft your dream celebration cake layer by layer. 
+              <p className="text-rose-900/80 text-sm md:text-base max-w-xl mx-auto mb-5 sm:mb-6 leading-relaxed font-medium">
+                Watch our bakers craft your dream celebration cake layer by layer.
                 Scroll down to witness the sweet transformation from sponge to masterpiece.
               </p>
 
-              {/* Top Action Suite */}
-              <div className="flex flex-wrap items-center justify-center gap-3">
+              {/* Top Action Suite - Sitting prominently on top of the plate */}
+              <div className="flex flex-row items-center justify-center gap-2.5 sm:gap-3 w-full max-w-sm sm:max-w-none mx-auto mt-1 sm:mt-0">
                 <button
                   onClick={onOrderNow}
-                  className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold text-xs sm:text-sm shadow-[0_8px_20px_rgba(225,29,72,0.35)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.5)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                  className="flex-1 sm:flex-none max-w-[175px] sm:max-w-none px-4 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold text-xs sm:text-sm shadow-[0_10px_25px_rgba(225,29,72,0.4)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.55)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
-                  <ShoppingBag className="w-4 h-4" />
+                  <ShoppingBag className="w-4 h-4 shrink-0" />
                   <span>Order Custom Cake</span>
                 </button>
 
                 <button
                   onClick={onViewPoster}
-                  className="px-4 py-2.5 sm:px-5 sm:py-3 rounded-full bg-white/90 hover:bg-white text-rose-900 border border-rose-200/90 font-semibold text-xs sm:text-sm shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                  className="flex-1 sm:flex-none max-w-[145px] sm:max-w-none px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-full bg-white/95 hover:bg-white text-rose-900 border border-rose-200/90 font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
-                  <Sparkles className="w-4 h-4 text-rose-500" />
+                  <Sparkles className="w-4 h-4 text-rose-500 shrink-0" />
                   <span>Official Poster</span>
                 </button>
 
@@ -499,7 +524,7 @@ export function CakeScrollShowcase({
             {/* Bottom Gentle Scroll Prompt */}
             <div
               style={{ pointerEvents: opacity0 > 0.3 ? "auto" : "none" }}
-              className="flex flex-col items-center text-center"
+              className="flex flex-col items-center text-center pb-1 sm:pb-0"
             >
               {!isInitialReady ? (
                 <div className="flex flex-col items-center gap-1.5 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-rose-200 shadow-sm text-xs font-semibold text-rose-700">
@@ -515,8 +540,8 @@ export function CakeScrollShowcase({
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-700 animate-bounce">
-                  <ChevronDown className="w-4 h-4 text-rose-500" />
+                <div className="flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/85 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-700 animate-bounce">
+                  <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
                   <span>Scroll down to watch the cake build</span>
                 </div>
               )}
@@ -536,87 +561,32 @@ export function CakeScrollShowcase({
               transform: `translateY(${(1 - opacity1) * 16}px)`,
               visibility: opacity1 > 0.005 ? "visible" : "hidden",
             }}
-            className="absolute left-5 right-5 lg:left-5 lg:right-auto w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[51%] lg:-translate-y-1/2 flex flex-col gap-3 sm:gap-3.5 lg:gap-4 pointer-events-none transition-none"
+            className="absolute left-5 right-5 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[500px] lg:left-5 lg:right-auto lg:translate-x-0 w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[50%] lg:-translate-y-1/2 pointer-events-none transition-none"
           >
-            {/* Badge (No stage number) */}
-            <div style={{ pointerEvents: opacity1 > 0.3 ? "auto" : "none" }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-sm">
+            <div
+              style={{ pointerEvents: opacity1 > 0.3 ? "auto" : "none" }}
+              className="p-6 sm:p-7 rounded-3xl bg-white/80 backdrop-blur-md border border-white/80 shadow-[0_10px_35px_rgba(74,21,37,0.08)] flex flex-col gap-2.5 sm:gap-3"
+            >
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-xs">
                 <Layers className="w-3.5 h-3.5" />
                 <span>Crumb &amp; Berry Compote</span>
               </div>
-            </div>
 
-            {/* Headline & Cursive Subtitle */}
-            <div style={{ pointerEvents: opacity1 > 0.3 ? "auto" : "none" }}>
-              <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.12] mb-1 drop-shadow-2xs">
-                Golden Chiffon &amp; Real Berry Confit
-              </h2>
-              <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
-                “Whisper-soft sponge, baked fresh every morning”
+              {/* Headline & Cursive Subtitle */}
+              <div>
+                <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.15] mb-1">
+                  Golden Chiffon &amp; Real Berry Confit
+                </h2>
+                <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
+                  “Whisper-soft sponge, baked fresh every morning”
+                </p>
+              </div>
+
+              {/* Artisan Description */}
+              <p className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal">
+                Our foundation begins with whisper-soft vanilla chiffon sponge soaked in fruit nectar. Each golden tier is generously filled with freshly simmered strawberry compote.
               </p>
-            </div>
-
-            {/* Artisan Description */}
-            <p
-              style={{ pointerEvents: opacity1 > 0.3 ? "auto" : "none" }}
-              className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal"
-            >
-              Our foundation begins with whisper-soft vanilla chiffon sponge soaked in fruit nectar. Each golden tier is generously filled with freshly simmered strawberry compote.
-            </p>
-
-            {/* Feature Highlights */}
-            <div
-              style={{ pointerEvents: opacity1 > 0.3 ? "auto" : "none" }}
-              className="grid grid-cols-2 gap-2.5"
-            >
-              <div className="p-2.5 sm:p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-amber-200/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-950 mb-0.5">
-                  <span className="text-base">🧈</span>
-                  <span>Pure Dairy Butter</span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-stone-600 leading-snug">
-                  100% dairy butter for a tender, velvety moist crumb.
-                </p>
-              </div>
-
-              <div className="p-2.5 sm:p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-amber-200/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-950 mb-0.5">
-                  <span className="text-base">🍓</span>
-                  <span>Real Strawberry</span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-stone-600 leading-snug">
-                  Slow-reduced compote with zero artificial additives.
-                </p>
-              </div>
-            </div>
-
-            {/* Artisan Recipe Details */}
-            <div
-              style={{ pointerEvents: opacity1 > 0.3 ? "auto" : "none" }}
-              className="p-2.5 sm:p-3 rounded-2xl bg-amber-500/10 border border-amber-200/60 text-xs sm:text-sm text-amber-950 font-medium flex items-center gap-2"
-            >
-              <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-              <span>Sponge: Vanilla Chiffon • Moist Chocolate • Ribbon Velvet</span>
-            </div>
-
-            {/* Delivery & Trust Details */}
-            <div
-              style={{ pointerEvents: opacity1 > 0.3 ? "auto" : "none" }}
-              className="pt-2.5 border-t border-stone-900/10 text-xs text-stone-700 font-medium"
-            >
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>100% Baked From Scratch</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>{CONTACT_INFO.phone1}</span>
-                </div>
-                <div className="col-span-2 text-[11px] text-stone-600 pt-0.5">
-                  <span>📍 Freshly Baked in Hemmathagama &amp; Thalgaspitiya</span>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -629,87 +599,32 @@ export function CakeScrollShowcase({
               transform: `translateY(${(1 - opacity2) * 16}px)`,
               visibility: opacity2 > 0.005 ? "visible" : "hidden",
             }}
-            className="absolute left-5 right-5 lg:left-5 lg:right-auto w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[51%] lg:-translate-y-1/2 flex flex-col gap-3 sm:gap-3.5 lg:gap-4 pointer-events-none transition-none"
+            className="absolute left-5 right-5 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[500px] lg:left-5 lg:right-auto lg:translate-x-0 w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[50%] lg:-translate-y-1/2 pointer-events-none transition-none"
           >
-            {/* Badge (No stage number) */}
-            <div style={{ pointerEvents: opacity2 > 0.3 ? "auto" : "none" }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-sm">
+            <div
+              style={{ pointerEvents: opacity2 > 0.3 ? "auto" : "none" }}
+              className="p-6 sm:p-7 rounded-3xl bg-white/80 backdrop-blur-md border border-white/80 shadow-[0_10px_35px_rgba(74,21,37,0.08)] flex flex-col gap-2.5 sm:gap-3"
+            >
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-xs">
                 <Palette className="w-3.5 h-3.5" />
                 <span>Silk Velvet Buttercream</span>
               </div>
-            </div>
 
-            {/* Headline & Cursive Subtitle */}
-            <div style={{ pointerEvents: opacity2 > 0.3 ? "auto" : "none" }}>
-              <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.12] mb-1 drop-shadow-2xs">
-                Hand-Whipped Silky Buttercream
-              </h2>
-              <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
-                “Porcelain-smooth finish in custom pastel tints”
+              {/* Headline & Cursive Subtitle */}
+              <div>
+                <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.15] mb-1">
+                  Hand-Whipped Silky Buttercream
+                </h2>
+                <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
+                  “Porcelain-smooth finish in custom pastel tints”
+                </p>
+              </div>
+
+              {/* Artisan Description */}
+              <p className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal">
+                Whipped in small batches until feather-light. Our Swiss meringue buttercream recipe is uniquely balanced — delicate, cloud-soft, and never overly sweet.
               </p>
-            </div>
-
-            {/* Artisan Description */}
-            <p
-              style={{ pointerEvents: opacity2 > 0.3 ? "auto" : "none" }}
-              className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal"
-            >
-              Whipped in small batches until feather-light. Our Swiss meringue buttercream recipe is uniquely balanced — delicate, cloud-soft, and never overly sweet.
-            </p>
-
-            {/* Feature Highlights */}
-            <div
-              style={{ pointerEvents: opacity2 > 0.3 ? "auto" : "none" }}
-              className="grid grid-cols-2 gap-2.5"
-            >
-              <div className="p-2.5 sm:p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-pink-200/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-rose-950 mb-0.5">
-                  <span className="text-base">☁️</span>
-                  <span>Cloud-Light Silk</span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-stone-600 leading-snug">
-                  Subtle &amp; balanced, highlighting natural fresh aromas.
-                </p>
-              </div>
-
-              <div className="p-2.5 sm:p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-pink-200/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-rose-950 mb-0.5">
-                  <span className="text-base">🎨</span>
-                  <span>Custom Pastel Tints</span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-stone-600 leading-snug">
-                  Tailored pastel palettes to match your celebration colors.
-                </p>
-              </div>
-            </div>
-
-            {/* Artisan Technique Details */}
-            <div
-              style={{ pointerEvents: opacity2 > 0.3 ? "auto" : "none" }}
-              className="p-2.5 sm:p-3 rounded-2xl bg-pink-500/10 border border-pink-200/60 text-xs sm:text-sm text-rose-950 font-medium flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4 text-rose-500 shrink-0" />
-              <span>Themes: Blossom Pink • Lavender Lilac • Sage Green • Baby Blue</span>
-            </div>
-
-            {/* Delivery & Trust Details */}
-            <div
-              style={{ pointerEvents: opacity2 > 0.3 ? "auto" : "none" }}
-              className="pt-2.5 border-t border-stone-900/10 text-xs text-stone-700 font-medium"
-            >
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-pink-600 shrink-0" />
-                  <span>Smooth Razor Edges</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-pink-600 shrink-0" />
-                  <span>{CONTACT_INFO.phone1}</span>
-                </div>
-                <div className="col-span-2 text-[11px] text-stone-600 pt-0.5">
-                  <span>📍 Freshly Baked in Hemmathagama &amp; Thalgaspitiya</span>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -722,97 +637,32 @@ export function CakeScrollShowcase({
               transform: `translateY(${(1 - opacity3) * 16}px)`,
               visibility: opacity3 > 0.005 ? "visible" : "hidden",
             }}
-            className="absolute left-5 right-5 lg:left-5 lg:right-auto w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[51%] lg:-translate-y-1/2 flex flex-col gap-3 sm:gap-3.5 lg:gap-4 pointer-events-none transition-none"
+            className="absolute left-5 right-5 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[500px] lg:left-5 lg:right-auto lg:translate-x-0 w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[50%] lg:-translate-y-1/2 pointer-events-none transition-none"
           >
-            {/* Badge (No stage number) */}
-            <div style={{ pointerEvents: opacity3 > 0.3 ? "auto" : "none" }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-purple-600 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-sm">
+            <div
+              style={{ pointerEvents: opacity3 > 0.3 ? "auto" : "none" }}
+              className="p-6 sm:p-7 rounded-3xl bg-white/80 backdrop-blur-md border border-white/80 shadow-[0_10px_35px_rgba(74,21,37,0.08)] flex flex-col gap-2.5 sm:gap-3"
+            >
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-purple-600 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-xs">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Couture Embellishment &amp; Drips</span>
               </div>
-            </div>
 
-            {/* Headline & Cursive Subtitle */}
-            <div style={{ pointerEvents: opacity3 > 0.3 ? "auto" : "none" }}>
-              <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.12] mb-1 drop-shadow-2xs">
-                Pastel Ganache Drips &amp; Rosettes
-              </h2>
-              <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
-                “Artistic details tailored to your dream celebration”
+              {/* Headline & Cursive Subtitle */}
+              <div>
+                <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.15] mb-1">
+                  Pastel Ganache Drips &amp; Rosettes
+                </h2>
+                <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
+                  “Artistic details tailored to your dream celebration”
+                </p>
+              </div>
+
+              {/* Artisan Description */}
+              <p className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal">
+                Cascading glossy pastel drips poured along each edge, crowned with delicately piped buttercream rosettes, swirl peaks, and shimmering sugar pearls.
               </p>
-            </div>
-
-            {/* Artisan Description */}
-            <p
-              style={{ pointerEvents: opacity3 > 0.3 ? "auto" : "none" }}
-              className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal"
-            >
-              Cascading glossy pastel drips poured along each edge, crowned with delicately piped buttercream rosettes, swirl peaks, and shimmering sugar pearls.
-            </p>
-
-            {/* Feature Highlights */}
-            <div
-              style={{ pointerEvents: opacity3 > 0.3 ? "auto" : "none" }}
-              className="grid grid-cols-2 gap-2.5"
-            >
-              <div className="p-2.5 sm:p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-purple-200/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-purple-950 mb-0.5">
-                  <span className="text-base">✨</span>
-                  <span>Glossy Ganache Drips</span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-stone-600 leading-snug">
-                  Silky white chocolate ganache cascading down tier edges.
-                </p>
-              </div>
-
-              <div className="p-2.5 sm:p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-purple-200/70 shadow-2xs">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-purple-950 mb-0.5">
-                  <span className="text-base">👑</span>
-                  <span>Piped Floral Swirls</span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-stone-600 leading-snug">
-                  French star-piped rosettes, swirl peaks, and pearls.
-                </p>
-              </div>
-            </div>
-
-            {/* Celebration Occasions Suite */}
-            <div
-              style={{ pointerEvents: opacity3 > 0.3 ? "auto" : "none" }}
-              className="p-2.5 sm:p-3 rounded-2xl bg-purple-500/10 border border-purple-200/60 flex flex-wrap items-center gap-1.5 text-xs text-purple-950 font-bold"
-            >
-              <span className="flex items-center gap-1 text-xs text-purple-900 font-semibold mr-1">
-                <Award className="w-3.5 h-3.5 text-purple-600" />
-                <span>Themes:</span>
-              </span>
-              {["Weddings", "Birthdays", "Anniversaries", "Bridal Showers"].map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2 py-0.5 rounded-full bg-white/80 text-purple-950 border border-purple-200/80 text-[11px] shadow-2xs"
-                >
-                  ♡ {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* Delivery & Trust Details */}
-            <div
-              style={{ pointerEvents: opacity3 > 0.3 ? "auto" : "none" }}
-              className="pt-2.5 border-t border-stone-900/10 text-xs text-stone-700 font-medium"
-            >
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-1.5">
-                  <Award className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                  <span>Personalized Toppers</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                  <span>{CONTACT_INFO.phone1}</span>
-                </div>
-                <div className="col-span-2 text-[11px] text-stone-600 pt-0.5">
-                  <span>📍 Freshly Baked in Hemmathagama &amp; Thalgaspitiya</span>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -825,87 +675,50 @@ export function CakeScrollShowcase({
               transform: `translateY(${(1 - opacity4) * 16}px)`,
               visibility: opacity4 > 0.005 ? "visible" : "hidden",
             }}
-            className="absolute left-5 right-5 lg:left-5 lg:right-auto w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[51%] lg:-translate-y-1/2 flex flex-col gap-3 sm:gap-3.5 lg:gap-4 pointer-events-none transition-none"
+            className="absolute left-5 right-5 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[500px] lg:left-5 lg:right-auto lg:translate-x-0 w-auto lg:w-[460px] xl:w-[490px] top-[48%] -translate-y-0 lg:top-[50%] lg:-translate-y-1/2 pointer-events-none transition-none"
           >
-            {/* Badge */}
-            <div style={{ pointerEvents: opacity4 > 0.3 ? "auto" : "none" }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-sm">
-                <Award className="w-3.5 h-3.5" />
-                <span>The Masterpiece • Ready For Your Special Day</span>
-              </div>
-            </div>
-
-            {/* Headline & Cursive Subtitle */}
-            <div style={{ pointerEvents: opacity4 > 0.3 ? "auto" : "none" }}>
-              <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.12] mb-1 drop-shadow-2xs">
-                FS Signature Butterfly Celebration Cake
-              </h2>
-              <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
-                “Made with love, for your sweet moments ♡”
-              </p>
-            </div>
-
-            {/* Artisan Description */}
-            <p
-              style={{ pointerEvents: opacity4 > 0.3 ? "auto" : "none" }}
-              className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal"
-            >
-              Adorned with delicate edible 3D flutter butterflies, golden pearls, and pastel blooms. Hand-crafted upon order for your most cherished celebration.
-            </p>
-
-            {/* Primary Action Suite */}
             <div
               style={{ pointerEvents: opacity4 > 0.3 ? "auto" : "none" }}
-              className="flex flex-col gap-2 pt-1"
+              className="p-6 sm:p-7 rounded-3xl bg-white/85 backdrop-blur-md border border-white/80 shadow-[0_12px_40px_rgba(74,21,37,0.1)] flex flex-col gap-2.5 sm:gap-3.5"
             >
-              <button
-                onClick={onOrderNow}
-                className="w-full px-5 py-3 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold text-sm shadow-[0_8px_20px_rgba(225,29,72,0.35)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>Order This Custom Cake</span>
-              </button>
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-xs">
+                <Award className="w-3.5 h-3.5" />
+                <span>The Masterpiece • Ready For You</span>
+              </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <a
-                  href={`https://wa.me/${CONTACT_INFO.whatsappNumber}?text=${encodeURIComponent(
-                    "Hello FS Cake Gallery! I saw the animated Butterfly Celebration Cake on your website and would love to customize an order."
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3.5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              {/* Headline & Cursive Subtitle */}
+              <div>
+                <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-heading font-extrabold text-stone-950 tracking-tight leading-[1.15] mb-1">
+                  FS Signature Butterfly Celebration Cake
+                </h2>
+                <p className="font-cursive text-xl sm:text-2xl text-rose-600 font-bold">
+                  “Made with love, for your sweet moments ♡”
+                </p>
+              </div>
+
+              {/* Artisan Description */}
+              <p className="text-stone-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed font-normal">
+                Adorned with delicate edible 3D flutter butterflies, golden pearls, and pastel blooms. Hand-crafted fresh upon order for your most cherished celebration.
+              </p>
+
+              {/* Primary Action Suite (2 Flex Buttons in One Line) */}
+              <div className="flex flex-row items-center gap-2 sm:gap-3 pt-1">
+                <button
+                  onClick={onOrderNow}
+                  className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold text-xs sm:text-sm shadow-[0_8px_20px_rgba(225,29,72,0.35)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  <span>WhatsApp Baker</span>
-                </a>
+                  <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <span>Order Custom Cake</span>
+                </button>
 
                 <button
                   onClick={scrollToNextSection}
-                  className="px-3.5 py-2.5 rounded-full bg-white/80 hover:bg-white text-stone-900 border border-stone-300 font-bold text-xs transition-all flex items-center justify-center gap-1 cursor-pointer shadow-2xs hover:scale-[1.02]"
+                  className="flex-1 min-w-0 px-3 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white hover:bg-stone-50 text-stone-900 border border-stone-200/90 font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer hover:scale-[1.02] active:scale-95 whitespace-nowrap"
                 >
                   <span>Explore Gallery</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-rose-500" />
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500 shrink-0" />
                 </button>
-              </div>
-            </div>
-
-            {/* Delivery & Trust Details */}
-            <div
-              style={{ pointerEvents: opacity4 > 0.3 ? "auto" : "none" }}
-              className="pt-2.5 border-t border-stone-900/10 text-xs text-stone-700 font-medium"
-            >
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-1.5">
-                  <Bike className="w-3.5 h-3.5 text-rose-600 shrink-0" />
-                  <span>Doorstep Delivery</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-rose-600 shrink-0" />
-                  <span>{CONTACT_INFO.phone1}</span>
-                </div>
-                <div className="col-span-2 text-[11px] text-stone-600 pt-0.5">
-                  <span>📍 Freshly Baked in Hemmathagama &amp; Thalgaspitiya</span>
-                </div>
               </div>
             </div>
           </div>

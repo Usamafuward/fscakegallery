@@ -65,9 +65,9 @@ export function ContactSection() {
         </div>
 
         {/* Cohesive 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch max-w-2xl lg:max-w-none mx-auto w-full">
           {/* Left Column: Unified Bakery & Contact Details Card */}
-          <div className="lg:col-span-5 flex flex-col justify-between p-4 sm:p-7 rounded-3xl bg-white/95 border border-rose-200/90 shadow-[0_10px_35px_rgba(244,114,182,0.14)] backdrop-blur-sm">
+          <div className="lg:col-span-5 flex flex-col justify-between p-5 sm:p-7 rounded-3xl bg-white/95 border border-rose-200/90 shadow-[0_10px_35px_rgba(244,114,182,0.14)] backdrop-blur-sm">
             <div>
               {/* Bakery Atelier Header */}
               <div className="flex items-center gap-3 pb-4 sm:pb-5 border-b border-rose-100">
