@@ -53,6 +53,7 @@ export function CakeScrollShowcase({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
   const lastDrawnFrameRef = useRef<number>(-1);
+  const lastDrawnImgRef = useRef<HTMLImageElement | null>(null);
 
   // Smooth lerp state
   const targetProgressRef = useRef(0);
@@ -61,6 +62,8 @@ export function CakeScrollShowcase({
 
   // Smooth progress state for continuous UI transitions
   const [smoothProgress, setSmoothProgress] = useState(0);
+  const [loadPercent, setLoadPercent] = useState(0);
+  const [isInitialReady, setIsInitialReady] = useState(false);
 
   // Responsive drawing logic with letterbox prevention and responsive side-by-side positioning
   const drawFrame = useCallback((frameIdx: number, progress: number = currentProgressRef.current) => {
@@ -69,19 +72,29 @@ export function CakeScrollShowcase({
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
-    // Find the closest loaded image if this exact frame is still buffering
+    // Resilient fallback: find the closest loaded image across the ENTIRE sequence
     let img = imagesRef.current[frameIdx];
-    if (!img) {
-      for (let offset = 1; offset < 30; offset++) {
-        if (frameIdx - offset >= 0 && imagesRef.current[frameIdx - offset]) {
-          img = imagesRef.current[frameIdx - offset];
-          break;
-        }
-        if (frameIdx + offset < TOTAL_FRAMES && imagesRef.current[frameIdx + offset]) {
-          img = imagesRef.current[frameIdx + offset];
-          break;
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      let closestDist = Infinity;
+      let bestImg: HTMLImageElement | null = null;
+      const total = imagesRef.current.length;
+      for (let i = 0; i < total; i++) {
+        const candidate = imagesRef.current[i];
+        if (candidate && candidate.complete && candidate.naturalWidth > 0) {
+          const dist = Math.abs(i - frameIdx);
+          if (dist < closestDist) {
+            closestDist = dist;
+            bestImg = candidate;
+            if (dist === 0) break;
+          }
         }
       }
+      // Never clear to blank if we already have drawn an image or found a nearest keyframe
+      img = bestImg || lastDrawnImgRef.current;
+    }
+
+    if (img && img.complete && img.naturalWidth > 0) {
+      lastDrawnImgRef.current = img;
     }
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -203,51 +216,89 @@ export function CakeScrollShowcase({
     }
   }, []);
 
-  // Preload frames logic with async off-thread decoding and controlled batching
+  // Preload frames logic: WebP format with 3-tier loading (Frame 0 -> Keyframes -> Parallel Worker Pool)
   useEffect(() => {
     let isMounted = true;
     const images: (HTMLImageElement | null)[] = new Array(TOTAL_FRAMES).fill(null);
     imagesRef.current = images;
 
-    const loadFrame = async (idx: number) => {
+    let loadedCount = 0;
+
+    const loadFrame = async (idx: number): Promise<HTMLImageElement | null> => {
+      if (images[idx]) return images[idx];
+
       const img = new window.Image();
       const frameStr = String(idx + 1).padStart(3, "0");
-      img.src = `/cake-frames/ezgif-frame-${frameStr}.png`;
+      img.src = `/cake-frames/ezgif-frame-${frameStr}.webp`;
+
       try {
         if (img.decode) {
           await img.decode();
+        } else {
+          await new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve;
+          });
         }
       } catch {
-        // Fallback for older decoders
+        // Fallback for decode errors
       }
-      if (!isMounted) return;
+
+      if (!isMounted) return null;
       images[idx] = img;
+      loadedCount++;
+      setLoadPercent((loadedCount / TOTAL_FRAMES) * 100);
+
+      // If this is frame 0, render immediately
       if (idx === 0) {
         drawFrame(0, 0);
       }
+
+      return img;
     };
 
-    // 1. Immediately load frame 1
-    loadFrame(0);
+    const runPreload = async () => {
+      // Tier 1: Immediately fetch and render Frame 0 (< 50ms, ~14KB)
+      await loadFrame(0);
+      if (!isMounted) return;
 
-    // 2. Load sequence: first 25 frames immediately, then batches of 4
-    const loadSequence = async () => {
-      for (let i = 1; i < Math.min(25, TOTAL_FRAMES); i++) {
-        if (!isMounted) return;
-        await loadFrame(i);
-      }
+      // Tier 2: Fetch 12 anchor keyframes across the timeline in parallel (< 300ms, ~350KB total)
+      const keyframes = [14, 29, 44, 59, 74, 89, 104, 119, 134, 149, 164, 179];
+      await Promise.all(keyframes.map((k) => loadFrame(k)));
+      if (!isMounted) return;
 
-      for (let i = 25; i < TOTAL_FRAMES; i += 4) {
-        if (!isMounted) return;
-        const batch: Promise<void>[] = [];
-        for (let j = i; j < Math.min(i + 4, TOTAL_FRAMES); j++) {
-          batch.push(loadFrame(j));
+      // Anchor keyframes are ready: user can now scroll smoothly anywhere without any empty space!
+      setIsInitialReady(true);
+
+      // Re-draw current position with the closest keyframe
+      const currentIdx = Math.min(
+        TOTAL_FRAMES - 1,
+        Math.max(0, Math.round(currentProgressRef.current * (TOTAL_FRAMES - 1)))
+      );
+      drawFrame(currentIdx, currentProgressRef.current);
+
+      // Tier 3: Fill in all remaining intermediate frames using a concurrent worker pool of 6
+      const remaining: number[] = [];
+      for (let i = 1; i < TOTAL_FRAMES; i++) {
+        if (!images[i]) {
+          remaining.push(i);
         }
-        await Promise.all(batch);
       }
+
+      const CONCURRENCY = 6;
+      let nextIndex = 0;
+
+      const worker = async () => {
+        while (nextIndex < remaining.length && isMounted) {
+          const current = remaining[nextIndex++];
+          await loadFrame(current);
+        }
+      };
+
+      await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
     };
 
-    loadSequence();
+    runPreload();
 
     return () => {
       isMounted = false;
@@ -450,10 +501,25 @@ export function CakeScrollShowcase({
               style={{ pointerEvents: opacity0 > 0.3 ? "auto" : "none" }}
               className="flex flex-col items-center text-center"
             >
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-700 animate-bounce">
-                <ChevronDown className="w-4 h-4 text-rose-500" />
-                <span>Scroll down to watch the cake build</span>
-              </div>
+              {!isInitialReady ? (
+                <div className="flex flex-col items-center gap-1.5 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-rose-200 shadow-sm text-xs font-semibold text-rose-700">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-rose-500 animate-spin" />
+                    <span>Preparing sweet cake animation...</span>
+                  </div>
+                  <div className="w-32 h-1 bg-rose-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-rose-400 to-pink-500 transition-all duration-300"
+                      style={{ width: `${Math.max(12, loadPercent)}%` }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-rose-200 shadow-sm text-xs sm:text-sm font-semibold text-rose-700 animate-bounce">
+                  <ChevronDown className="w-4 h-4 text-rose-500" />
+                  <span>Scroll down to watch the cake build</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -844,6 +910,14 @@ export function CakeScrollShowcase({
             </div>
           </div>
         </div>
+
+        {/* Subtle Background Buffering Pill (Non-blocking) */}
+        {loadPercent > 0 && loadPercent < 98 && (
+          <div className="absolute bottom-4 right-4 z-30 pointer-events-none transition-opacity duration-500 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-rose-200/80 shadow-xs text-[11px] font-semibold text-rose-800">
+            <Sparkles className="w-3.5 h-3.5 text-rose-500 animate-spin" />
+            <span>Buffering 3D view {Math.round(loadPercent)}%</span>
+          </div>
+        )}
       </div>
     </section>
   );
