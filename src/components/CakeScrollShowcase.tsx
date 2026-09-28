@@ -500,7 +500,7 @@ export function CakeScrollShowcase({
                   className="flex-1 sm:flex-none max-w-[175px] sm:max-w-none px-4 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold text-xs sm:text-sm shadow-[0_10px_25px_rgba(225,29,72,0.4)] hover:shadow-[0_12px_28px_rgba(225,29,72,0.55)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <ShoppingBag className="w-4 h-4 shrink-0" />
-                  <span>Order Custom Cake</span>
+                  <span>Order Cake</span>
                 </button>
 
                 <button
