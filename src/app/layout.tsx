@@ -94,12 +94,19 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
     shortcut: "/favicon.ico",
-    apple: "/images/logo.jpg",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      "4dc3da2MA9IhBlrARYe_cy7AVU2Ns9tMUCqp66oNqRg",
   },
   category: "Bakery & Cake Shop",
 };
@@ -112,6 +119,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full scroll-smooth">
       <head>
+        <meta
+          name="google-site-verification"
+          content="4dc3da2MA9IhBlrARYe_cy7AVU2Ns9tMUCqp66oNqRg"
+        />
         <JsonLd />
       </head>
       <body className="min-h-full flex flex-col bg-[#fffcf8] text-[#4a1525] antialiased selection:bg-rose-200 selection:text-rose-900">
