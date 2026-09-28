@@ -451,7 +451,7 @@ export function CakeScrollShowcase({
               transform: `translateY(${(1 - opacity0) * -24}px)`,
               visibility: opacity0 > 0.005 ? "visible" : "hidden",
             }}
-            className="absolute inset-0 w-full h-full flex flex-col justify-between pt-24 pb-12 sm:pt-28 sm:pb-24 max-w-6xl mx-auto px-4 sm:px-5 transition-none"
+            className="absolute inset-0 w-full h-full flex flex-col justify-between pt-24 pb-18 sm:pt-28 sm:pb-24 max-w-6xl mx-auto px-4 sm:px-5 transition-none"
           >
             {/* Center-Top Header */}
             <div

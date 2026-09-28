@@ -41,7 +41,7 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -53,55 +53,63 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
 
         {/* Modal Window */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 20 }}
+          initial={{ opacity: 0, scale: 0.94, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.92, y: 20 }}
+          exit={{ opacity: 0, scale: 0.94, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-lg bg-white rounded-3xl p-5 sm:p-8 shadow-2xl z-10 my-auto border border-rose-200 max-h-[90dvh] overflow-y-auto"
+          className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl z-10 my-auto border border-rose-200 max-h-[90dvh] sm:max-h-[85vh] flex flex-col overflow-hidden"
         >
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-rose-50 text-rose-700 hover:bg-rose-200 flex items-center justify-center transition-colors cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {/* Fixed Header */}
+          <div className="p-5 sm:p-7 pb-4 border-b border-rose-100 shrink-0 relative pr-14 bg-gradient-to-b from-rose-50/40 to-white">
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              aria-label="Close Order Modal"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 w-8 h-8 rounded-full bg-rose-50 text-rose-700 hover:bg-rose-200 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
 
-          <div className="flex items-center gap-2 text-rose-600 text-xs font-bold uppercase tracking-wider mb-2">
-            <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
-            Special cake for special day
+            <div className="flex items-center gap-2 text-rose-600 text-xs font-bold uppercase tracking-wider mb-1.5">
+              <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+              <span>Special cake for special day</span>
+            </div>
+
+            <h3 className="font-heading font-extrabold text-xl sm:text-2xl text-rose-950 mb-1">
+              Order Your Homemade Cake
+            </h3>
+            <p className="text-xs text-rose-800/80 leading-relaxed">
+              Fill out the details below to immediately send your order request to our WhatsApp.
+            </p>
           </div>
 
-          <h3 className="font-heading font-extrabold text-xl sm:text-2xl text-rose-950 mb-1">
-            Order Your Homemade Cake
-          </h3>
-          <p className="text-xs text-rose-800/80 mb-4 sm:mb-5">
-            Fill out the details below to immediately send your order request to our WhatsApp.
-          </p>
-
-          {/* Preselected Cake Banner */}
-          {selectedCake && (
-            <div className="mb-4 sm:mb-5 p-2.5 sm:p-3 rounded-2xl bg-rose-50 border border-rose-200 flex items-center gap-3">
-              <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white shrink-0">
-                <Image
-                  src={selectedCake.image}
-                  alt={selectedCake.name}
-                  fill
-                  className="object-cover"
-                />
+          {/* Scrollable Form Body - Scroll bar is strictly inside the form */}
+          <form
+            onSubmit={handleSendOrder}
+            className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-3.5 sm:space-y-4 [scrollbar-width:thin] [scrollbar-color:#fbcfe8_transparent] overscroll-contain"
+          >
+            {/* Preselected Cake Banner */}
+            {selectedCake && (
+              <div className="p-2.5 sm:p-3 rounded-2xl bg-rose-50/90 border border-rose-200 flex items-center gap-3">
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white shrink-0 shadow-2xs">
+                  <Image
+                    src={selectedCake.image}
+                    alt={selectedCake.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="overflow-hidden">
+                  <span className="text-[10px] uppercase font-bold text-rose-500 tracking-wider">
+                    Selected Design
+                  </span>
+                  <h4 className="font-heading font-bold text-xs sm:text-sm text-rose-950 truncate">
+                    {selectedCake.name}
+                  </h4>
+                </div>
               </div>
-              <div className="overflow-hidden">
-                <span className="text-[10px] uppercase font-bold text-rose-500 tracking-wider">
-                  Selected Design
-                </span>
-                <h4 className="font-heading font-bold text-xs sm:text-sm text-rose-950 truncate">
-                  {selectedCake.name}
-                </h4>
-              </div>
-            </div>
-          )}
+            )}
 
-          <form onSubmit={handleSendOrder} className="space-y-3 sm:space-y-3.5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-wider text-rose-900 block mb-1">
@@ -113,7 +121,7 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
                   placeholder="Your Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500"
+                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500 transition-colors"
                 />
               </div>
 
@@ -127,7 +135,7 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
                   placeholder="077xxxxxxx"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500"
+                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500 transition-colors"
                 />
               </div>
             </div>
@@ -142,7 +150,7 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500"
+                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500 transition-colors"
                 />
               </div>
 
@@ -153,7 +161,7 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
                 <select
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500"
+                  className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500 transition-colors cursor-pointer"
                 >
                   <option value="Hemmathagama">Hemmathagama</option>
                   <option value="Thalgaspitiya">Thalgaspitiya</option>
@@ -170,7 +178,7 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
               <select
                 value={flavor}
                 onChange={(e) => setFlavor(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500"
+                className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500 transition-colors cursor-pointer"
               >
                 <option value="Chocolate Fudge">Chocolate Fudge</option>
                 <option value="Vanilla Ribbon">Classic Vanilla Ribbon</option>
@@ -189,27 +197,27 @@ export function OrderModal({ isOpen, onClose, selectedCake }: OrderModalProps) {
                 placeholder="e.g. Inscription text, color theme, size preference..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500 resize-none"
+                className="w-full px-3 py-2 rounded-xl bg-rose-50/50 border border-rose-200 text-base sm:text-xs text-rose-950 focus:outline-none focus:border-rose-500 resize-none transition-colors"
               />
             </div>
 
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white shadow-md flex items-center justify-center gap-2 cursor-pointer transition-transform hover:scale-101"
+                className="w-full py-3.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-[1.01] active:scale-[0.99]"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Submit Order on WhatsApp</span>
               </button>
             </div>
-          </form>
 
-          <div className="mt-4 pt-3 border-t border-rose-100 flex items-center justify-center gap-4 text-xs text-rose-800">
-            <span>Or call us directly:</span>
-            <a href={`tel:${CONTACT_INFO.phone1}`} className="font-bold text-rose-600 underline">
-              {CONTACT_INFO.phone1}
-            </a>
-          </div>
+            <div className="pt-3 border-t border-rose-100 flex items-center justify-center gap-2 sm:gap-4 text-xs text-rose-800">
+              <span>Or call us directly:</span>
+              <a href={`tel:${CONTACT_INFO.phone1}`} className="font-bold text-rose-600 underline">
+                {CONTACT_INFO.phone1}
+              </a>
+            </div>
+          </form>
         </motion.div>
       </div>
     </AnimatePresence>
