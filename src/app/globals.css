@@ -1,26 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffcf8;
+  --foreground: #4a1525;
+  --primary-pink: #e11d48;
+  --soft-pink: #fdf2f5;
+  --pastel-blush: #fce7f3;
+  --warm-cream: #fff9f2;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+.font-cursive {
+  font-family: 'Dancing Script', 'Brush Script MT', 'Segoe Script', cursive;
+}
+
+.font-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Custom Soft Pastel Glassmorphism & Cards */
+.card-pastel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(251, 207, 232, 0.7);
+  box-shadow: 0 10px 30px -5px rgba(236, 72, 153, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+.card-pastel-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-pastel-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(244, 114, 182, 0.9);
+  box-shadow: 0 20px 40px -10px rgba(236, 72, 153, 0.18);
+}
+
+.brush-btn-pink {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #be123c 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px -4px rgba(225, 29, 72, 0.35);
+  transition: all 0.3s ease;
+}
+.brush-btn-pink:hover {
+  box-shadow: 0 12px 30px -2px rgba(225, 29, 72, 0.5);
+  transform: scale(1.02);
+}
+.brush-btn-pink:active {
+  transform: scale(0.98);
+}
+
+/* Custom soft scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #fff8f0;
+}
+::-webkit-scrollbar-thumb {
+  background: #f472b6;
+  border-radius: 9999px;
+  border: 2px solid #fff8f0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e11d48;
+}
+
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+.animate-gentle-float {
+  animation: gentleFloat 5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
 }
