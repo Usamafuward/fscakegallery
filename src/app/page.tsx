@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { CakeScrollShowcase } from "@/components/CakeScrollShowcase";
+import { MobileCakeShowcase } from "@/components/MobileCakeShowcase";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { AboutSection } from "@/components/AboutSection";
 import { SpecialtiesSection } from "@/components/SpecialtiesSection";
@@ -41,8 +42,14 @@ export default function Home() {
       <Navbar onOpenOrder={() => handleOpenOrder()} />
 
       <main className="flex-1">
-        {/* 1. Interactive Frame-by-Frame Cake Crafting Scroll Showcase */}
+        {/* 1. Desktop: Interactive Frame-by-Frame Cake Crafting Scroll Showcase */}
         <CakeScrollShowcase
+          onOrderNow={() => handleOpenOrder()}
+          onViewPoster={() => setIsPosterOpen(true)}
+        />
+
+        {/* 1b. Mobile: Clean Hero Section + Step-by-Step Auto Video Process (No Scroll Hijack) */}
+        <MobileCakeShowcase
           onOrderNow={() => handleOpenOrder()}
           onViewPoster={() => setIsPosterOpen(true)}
         />

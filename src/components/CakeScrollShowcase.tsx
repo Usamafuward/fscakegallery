@@ -283,6 +283,10 @@ export function CakeScrollShowcase({
     };
 
     const runPreload = async () => {
+      if (typeof window !== "undefined" && window.innerWidth < 1024) {
+        return;
+      }
+
       // Tier 1: Immediately fetch and render Frame 0 (< 50ms, ~14KB)
       await loadFrame(0);
       if (!isMounted) return;
@@ -347,6 +351,7 @@ export function CakeScrollShowcase({
   // High-performance scroll listener and RAF render loop
   useEffect(() => {
     const handleScroll = () => {
+      if (window.innerWidth < 1024) return;
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const totalDistance = containerRef.current.offsetHeight - window.innerHeight;
@@ -363,6 +368,11 @@ export function CakeScrollShowcase({
     let lastProgressUpdate = 0;
 
     const renderLoop = () => {
+      if (window.innerWidth < 1024) {
+        animationFrameIdRef.current = requestAnimationFrame(renderLoop);
+        return;
+      }
+
       // Fluid physics damping lerp
       const diff = targetProgressRef.current - currentProgressRef.current;
       if (Math.abs(diff) > 0.00005) {
@@ -428,7 +438,7 @@ export function CakeScrollShowcase({
     <section
       id="hero"
       ref={containerRef}
-      className="relative w-full h-[500vh] bg-[#eee1d1] select-none"
+      className="hidden lg:block relative w-full h-[500vh] bg-[#eee1d1] select-none"
     >
       {/* Sticky Fullscreen Canvas Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">

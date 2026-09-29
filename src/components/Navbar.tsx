@@ -43,7 +43,14 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
     >
       <div className="max-w-6xl mx-auto px-5 flex items-center justify-between">
         {/* Brand Logo & Name */}
-        <a href="#hero" className="flex items-center gap-2.5 sm:gap-3 group min-w-0">
+        <a
+          href="#hero"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          className="flex items-center gap-2.5 sm:gap-3 group min-w-0"
+        >
           <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-rose-300 shadow-[0_4px_12px_rgba(244,114,182,0.25)] transition-transform duration-300 group-hover:scale-105 bg-rose-50 shrink-0">
             <Image
               src="/images/logo.jpg"
@@ -73,6 +80,12 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
             <a
               key={link.name}
               href={link.href}
+              onClick={(e) => {
+                if (link.href === "#hero") {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
               className="px-2.5 lg:px-3.5 py-1.5 text-[11px] lg:text-xs font-semibold uppercase tracking-wider text-rose-900/80 hover:text-rose-600 hover:bg-rose-50/80 rounded-full transition-all whitespace-nowrap"
             >
               {link.name}
@@ -135,7 +148,13 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    setMobileMenuOpen(false);
+                    if (link.href === "#hero") {
+                      e.preventDefault();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
                   className="text-xs font-bold uppercase tracking-wider text-rose-900 hover:text-rose-600 py-2.5 px-3 rounded-xl hover:bg-rose-50 transition-colors"
                 >
                   {link.name}

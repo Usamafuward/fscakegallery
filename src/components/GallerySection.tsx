@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, Eye, ShoppingBag, Heart, Users, Check, RotateCcw } from "lucide-react";
+import { Sparkles, Eye, ShoppingBag, Heart, Users } from "lucide-react";
 import { CAKES, CATEGORIES, CakeItem } from "@/data/cakes";
 
 interface GallerySectionProps {
@@ -97,26 +97,6 @@ export function GallerySection({
             );
           })}
         </div>
-
-        {/* Active Filter Badge and Quick Reset */}
-        {selectedCategory !== "all" && (
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-xs text-rose-800">
-              <span>Showing:</span>
-              <strong className="text-rose-950 font-bold">
-                {CATEGORIES.find((c) => c.id === selectedCategory)?.label || selectedCategory}
-              </strong>
-              <span className="text-rose-500 font-mono">({filteredCakes.length})</span>
-            </div>
-            <button
-              onClick={() => handleCategorySelect("all")}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white hover:bg-rose-50 border border-rose-200 text-[11px] font-semibold text-rose-700 transition-colors cursor-pointer shadow-2xs"
-            >
-              <RotateCcw className="w-3 h-3 text-rose-500" />
-              <span>Show All Cakes</span>
-            </button>
-          </div>
-        )}
 
         {/* Cards Grid */}
         <motion.div

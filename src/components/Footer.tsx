@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Heart, Phone, MapPin, Bike, ArrowUp } from "lucide-react";
+import { Phone, MapPin, Bike } from "lucide-react";
 import { CONTACT_INFO } from "@/data/cakes";
 
 function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -15,9 +15,6 @@ function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 export function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   return (
     <footer className="bg-[#fff6f0] border-t border-rose-200/80 pt-12 sm:pt-16 pb-10 sm:pb-12 relative overflow-hidden text-rose-950">
@@ -144,13 +141,18 @@ export function Footer() {
             © {new Date().getFullYear()} FS Cake Gallery. Made with love, for your sweet moments ♡
           </p>
 
-          <button
-            onClick={scrollToTop}
-            className="flex items-center gap-1.5 text-rose-900 font-bold hover:text-rose-600 transition-colors cursor-pointer"
-          >
-            <span>Back to Top</span>
-            <ArrowUp className="w-3.5 h-3.5" />
-          </button>
+          <p className="flex items-center gap-1">
+            <span>Designed &amp; Developed by</span>
+            <a
+              href="https://usamapuward.netlify.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-rose-950 hover:text-rose-600 underline underline-offset-2 transition-colors"
+              title="Usama Puward | AI/ML Engineer & Full-Stack Developer"
+            >
+              Usama Puward
+            </a>
+          </p>
         </div>
       </div>
     </footer>
