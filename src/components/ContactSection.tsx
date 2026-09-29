@@ -381,7 +381,7 @@ export function ContactSection() {
                   className="w-full py-3 sm:py-3.5 rounded-full text-xs sm:text-sm font-extrabold uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-[0_4px_18px_rgba(5,150,105,0.3)] flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-101"
                 >
                   <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Send Order to WhatsApp ({CONTACT_INFO.phone1})</span>
+                  <span>Send Order to WhatsApp</span>
                 </button>
               </form>
             </div>

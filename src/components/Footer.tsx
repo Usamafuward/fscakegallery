@@ -48,7 +48,7 @@ export function Footer() {
 
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-semibold">
               <Bike className="w-3.5 h-3.5 text-rose-600" />
-              <span>Delivery available across local areas 🛵</span>
+              <span>Delivery available across local areas</span>
             </div>
           </div>
 
@@ -60,27 +60,27 @@ export function Footer() {
             <ul className="space-y-2 text-xs text-rose-800/90 font-medium">
               <li>
                 <a href="#gallery" className="hover:text-rose-600 transition-colors">
-                  🎂 Birthday Theme Cakes
+                  Birthday Theme Cakes
                 </a>
               </li>
               <li>
                 <a href="#gallery" className="hover:text-rose-600 transition-colors">
-                  💍 Wedding Celebration Tiers
+                  Wedding Celebration Tiers
                 </a>
               </li>
               <li>
                 <a href="#gallery" className="hover:text-rose-600 transition-colors">
-                  💖 Anniversary Romantic Cakes
+                  Anniversary Romantic Cakes
                 </a>
               </li>
               <li>
                 <a href="#gallery" className="hover:text-rose-600 transition-colors">
-                  🍓 Korean Bento Box Cakes
+                  Korean Bento Box Cakes
                 </a>
               </li>
               <li>
                 <a href="#gallery" className="hover:text-rose-600 transition-colors">
-                  🧁 Gourmet Floral Cupcake Boxes
+                  Gourmet Floral Cupcake Boxes
                 </a>
               </li>
             </ul>

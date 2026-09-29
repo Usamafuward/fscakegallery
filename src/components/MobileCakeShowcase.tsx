@@ -262,7 +262,7 @@ export function MobileCakeShowcase({
             </div>
             <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-rose-100/80 border border-rose-200 text-rose-900 font-medium">
               <Bike className="w-3 h-3 text-rose-600 shrink-0" />
-              <span>Delivery available 🛵</span>
+              <span>Delivery available</span>
             </div>
           </div>
 
