@@ -41,7 +41,7 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-16 sm:py-20 bg-gradient-to-b from-[#fffcf8] via-[#fff4f7] to-[#fff0f4] relative scroll-mt-16">
+    <section id="contact" className="py-14 sm:py-20 bg-gradient-to-b from-[#fffcf8] via-[#fff4f7] to-[#fff0f4] relative scroll-mt-16">
       {/* Decorative Pastel Background Blobs */}
       <div className="absolute top-1/4 left-10 w-80 h-80 bg-rose-200/40 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-100/50 rounded-full blur-3xl pointer-events-none -z-10" />
@@ -49,11 +49,11 @@ export function ContactSection() {
       <div className="max-w-6xl mx-auto px-4 sm:px-5">
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100/80 text-rose-700 text-xs font-bold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100/80 text-rose-700 text-xs font-bold uppercase tracking-wider mb-2.5 sm:mb-3">
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
             Get In Touch &amp; Order
           </div>
-          <h2 className="text-2xl sm:text-4xl font-heading font-extrabold text-rose-950 tracking-tight mb-2.5">
+          <h2 className="text-2xl sm:text-4xl font-heading font-extrabold text-rose-950 tracking-tight mb-2.5 sm:mb-3">
             Order Your{" "}
             <span className="font-cursive text-rose-600 font-bold italic">
               Special Cake Today
@@ -65,7 +65,7 @@ export function ContactSection() {
         </div>
 
         {/* Cohesive 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch max-w-2xl lg:max-w-none mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-stretch max-w-2xl lg:max-w-none mx-auto w-full">
           {/* Left Column: Unified Bakery & Contact Details Card */}
           <div className="lg:col-span-5 flex flex-col justify-between p-5 sm:p-7 rounded-3xl bg-white/95 border border-rose-200/90 shadow-[0_10px_35px_rgba(244,114,182,0.14)] backdrop-blur-sm">
             <div>
@@ -251,7 +251,7 @@ export function ContactSection() {
           </div>
 
           {/* Right Column: Instant WhatsApp Order Generator */}
-          <div className="lg:col-span-7 flex flex-col justify-between p-4 sm:p-8 rounded-3xl bg-white/95 border border-rose-200/90 shadow-[0_10px_35px_rgba(244,114,182,0.14)] backdrop-blur-sm">
+          <div className="lg:col-span-7 flex flex-col justify-between p-5 sm:p-7 rounded-3xl bg-white/95 border border-rose-200/90 shadow-[0_10px_35px_rgba(244,114,182,0.14)] backdrop-blur-sm">
             <div>
               <div className="flex items-center gap-1.5 text-rose-600 font-cursive text-lg sm:text-2xl font-bold mb-1">
                 <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500 fill-rose-500" />

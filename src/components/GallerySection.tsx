@@ -58,7 +58,7 @@ export function GallerySection({
   });
 
   return (
-    <section id="gallery" className="py-16 sm:py-20 bg-white relative scroll-mt-16">
+    <section id="gallery" className="py-14 sm:py-20 bg-white relative scroll-mt-16">
 
       <div className="max-w-6xl mx-auto px-4 sm:px-5">
         {/* Section Header */}
@@ -101,7 +101,7 @@ export function GallerySection({
         {/* Cards Grid */}
         <motion.div
           layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-7"
         >
           <AnimatePresence mode="popLayout">
             {filteredCakes.map((cake, idx) => (
@@ -112,7 +112,7 @@ export function GallerySection({
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.94, y: 15 }}
                 transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="rounded-3xl bg-white border border-rose-100 hover:border-rose-300 shadow-[0_4px_20px_rgba(244,114,182,0.1)] hover:shadow-[0_15px_35px_rgba(244,114,182,0.2)] transition-all p-3.5 flex flex-col justify-between group"
+                className="rounded-3xl bg-white border border-rose-100 hover:border-rose-300 shadow-[0_4px_20px_rgba(244,114,182,0.1)] hover:shadow-[0_15px_35px_rgba(244,114,182,0.2)] transition-all p-3.5 sm:p-4 flex flex-col justify-between group"
               >
                 <div>
                   {/* Cake Image Box */}
@@ -190,7 +190,7 @@ export function GallerySection({
         </motion.div>
 
         {/* Quick Note at Bottom */}
-        <div className="mt-12 sm:mt-14 p-5 sm:p-6 rounded-3xl bg-[#fff7f0] border border-rose-200/80 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="mt-8 sm:mt-12 p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#fff7f0] border border-rose-200/80 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3.5 sm:gap-4 text-center sm:text-left">
           <div>
             <h4 className="font-heading font-bold text-sm sm:text-base text-rose-950">
               Have a specific photo or theme in mind?

@@ -66,9 +66,9 @@ export function SpecialtiesSection({ onSelectCategory }: SpecialtiesSectionProps
   ];
 
   return (
-    <section id="specialties" className="py-20 bg-[#fff9f3] relative">
+    <section id="specialties" className="py-14 sm:py-20 bg-[#fff9f3] relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-5">
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider mb-2.5 sm:mb-3">
             <Sparkles className="w-3.5 h-3.5" />
             Our Core Specialties
@@ -85,7 +85,7 @@ export function SpecialtiesSection({ onSelectCategory }: SpecialtiesSectionProps
         </div>
 
         {/* 6 Grid Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
           {specialties.map((item, idx) => {
             const Icon = item.icon;
             return (
@@ -97,7 +97,7 @@ export function SpecialtiesSection({ onSelectCategory }: SpecialtiesSectionProps
                 transition={{ delay: idx * 0.08, duration: 0.5 }}
                 whileHover={{ y: -4 }}
                 onClick={() => onSelectCategory(item.buttonFilter)}
-                className="p-6 rounded-3xl bg-white border border-rose-100 hover:border-rose-300 shadow-[0_4px_20px_rgba(244,114,182,0.08)] hover:shadow-[0_12px_30px_rgba(244,114,182,0.16)] transition-all cursor-pointer flex flex-col justify-between group"
+                className="p-5 sm:p-6 rounded-3xl bg-white border border-rose-100 hover:border-rose-300 shadow-[0_4px_20px_rgba(244,114,182,0.08)] hover:shadow-[0_12px_30px_rgba(244,114,182,0.16)] transition-all cursor-pointer flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">

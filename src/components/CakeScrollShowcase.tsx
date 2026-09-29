@@ -718,14 +718,6 @@ export function CakeScrollShowcase({
             </div>
           </div>
         </div>
-
-        {/* Subtle Background Buffering Pill (Non-blocking) */}
-        {loadPercent > 0 && loadPercent < 98 && (
-          <div className="absolute bottom-4 right-4 z-30 pointer-events-none transition-opacity duration-500 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-rose-200/80 shadow-xs text-[11px] font-semibold text-rose-800">
-            <Sparkles className="w-3.5 h-3.5 text-rose-500 animate-spin" />
-            <span>Buffering 3D view {Math.round(loadPercent)}%</span>
-          </div>
-        )}
       </div>
     </section>
   );

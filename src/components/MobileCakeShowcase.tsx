@@ -193,12 +193,12 @@ export function MobileCakeShowcase({
       {/* ============================================================ */}
       <section
         id="hero-mobile"
-        className="relative w-full bg-gradient-to-b from-[#efe3cc] via-[#f1e0cb] to-[#f2e5d2] pt-24 pb-14 px-4 overflow-hidden text-rose-950"
+        className="relative w-full bg-gradient-to-b from-[#efe3cc] via-[#f1e0cb] to-[#f2e5d2] pt-24 pb-14 px-4 sm:px-5 overflow-hidden text-rose-950"
       >
         {/* Ambient lighting glows */}
         <div className="absolute top-10 left-1/2 -translate-x-1/2 w-72 h-72 bg-rose-200/40 rounded-full blur-3xl pointer-events-none -z-10" />
 
-        <div className="max-w-lg mx-auto flex flex-col items-center text-center">
+        <div className="max-w-xl mx-auto flex flex-col items-center text-center">
           {/* Floating Pill Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-rose-200 shadow-xs text-xs font-semibold text-rose-800 mb-4">
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
@@ -299,25 +299,25 @@ export function MobileCakeShowcase({
       {/* ============================================================ */}
       <section
         id="mobile-crafting-steps"
-        className="relative w-full bg-[#eee1d1] py-12 px-4 border-t border-rose-200/70 text-rose-950 overflow-hidden"
+        className="relative w-full bg-[#eee1d1] py-14 sm:py-20 px-4 sm:px-5 border-t border-rose-200/70 text-rose-950 overflow-hidden"
       >
-        <div className="max-w-md mx-auto flex flex-col items-center">
+        <div className="max-w-xl mx-auto flex flex-col items-center">
           {/* Section Header */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-[11px] font-bold uppercase tracking-wider mb-2 shadow-2xs">
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-bold uppercase tracking-wider mb-2.5 sm:mb-3 shadow-2xs">
               <Sparkles className="w-3.5 h-3.5 text-rose-600" />
               <span>Artisan Crafting Process</span>
             </div>
-            <h2 className="text-2xl font-heading font-extrabold text-stone-950 tracking-tight leading-tight mb-1.5">
+            <h2 className="text-2xl sm:text-4xl font-heading font-extrabold text-stone-950 tracking-tight leading-tight mb-2 sm:mb-2.5">
               How We Craft Your Dream Cake
             </h2>
-            <p className="text-stone-700 text-xs max-w-sm leading-relaxed">
+            <p className="text-stone-700 text-xs sm:text-base max-w-md mx-auto leading-relaxed">
               Watch our bakers build your celebration cake layer by layer. The video automatically progresses through Steps 1 to 4!
             </p>
           </div>
 
           {/* Video Showcase Card */}
-          <div className="relative w-full aspect-[16/10] rounded-3xl overflow-hidden border-2 border-rose-200/90 shadow-[0_12px_35px_rgba(74,21,37,0.12)] bg-[#efe3cc] mb-4">
+          <div className="relative w-full aspect-[16/10] sm:aspect-video rounded-3xl overflow-hidden border-2 border-rose-200/90 shadow-[0_12px_35px_rgba(74,21,37,0.12)] bg-[#efe3cc] mb-4 sm:mb-5">
             <video
               ref={videoRef}
               src="/videos/cake-assembly.mp4"
@@ -330,20 +330,8 @@ export function MobileCakeShowcase({
               className="w-full h-full object-cover"
             />
 
-            {/* Top Info Badges */}
-            <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-              <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold tracking-wide flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Step 0{activeStep + 1} / 04 • {currentStepData.label}
-              </span>
-
-              <span className="px-2 py-0.5 rounded-full bg-white/85 backdrop-blur-md text-rose-900 text-[10px] font-semibold shadow-2xs">
-                0.6x Slow Motion
-              </span>
-            </div>
-
             {/* Bottom Play/Pause Controller Overlay */}
-            <div className="absolute bottom-4 right-3 z-10">
+            <div className="absolute bottom-3 right-3 z-10">
               <button
                 onClick={togglePlay}
                 className="w-8 h-8 rounded-full bg-white/90 text-stone-900 hover:text-rose-600 flex items-center justify-center shadow-md active:scale-90 transition-transform cursor-pointer"
@@ -359,7 +347,7 @@ export function MobileCakeShowcase({
             </div>
 
             {/* 4-Segment Modern Video Progress Bar */}
-            <div className="absolute bottom-0 left-0 right-0 p-2.5 bg-gradient-to-t from-black/60 to-transparent flex items-center gap-1.5">
+            <div className="absolute top-0 left-0 right-0 p-2.5 flex items-center gap-1.5">
               {CRAFTING_STEPS.map((step, idx) => {
                 let fill = 0;
                 if (idx < activeStep) fill = 100;

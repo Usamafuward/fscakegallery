@@ -30,7 +30,7 @@ export function AboutSection() {
   ];
 
   return (
-    <section id="about" className="py-20 bg-white relative overflow-hidden">
+    <section id="about" className="py-14 sm:py-20 bg-white relative overflow-hidden">
       {/* Decorative Pastel Background Circles */}
       <div className="absolute top-1/2 left-0 w-72 h-72 bg-pink-100/40 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-50 rounded-full blur-3xl pointer-events-none -z-10" />
@@ -77,19 +77,19 @@ export function AboutSection() {
             transition={{ duration: 0.7 }}
             className="md:col-span-7"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider mb-2.5 sm:mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               Our Story &amp; Passion
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-rose-950 tracking-tight leading-tight mb-4">
+            <h2 className="text-2xl sm:text-4xl font-heading font-extrabold text-rose-950 tracking-tight leading-tight mb-2.5 sm:mb-3">
               Baking happiness into every{" "}
               <span className="font-cursive text-rose-600 font-bold italic">
                 cherished celebration
               </span>
             </h2>
 
-            <p className="text-rose-900/80 text-sm sm:text-base leading-relaxed mb-8">
+            <p className="text-rose-900/80 text-xs sm:text-base leading-relaxed mb-6 sm:mb-8">
               At <strong>FS Cake Gallery</strong>, we believe every special day deserves an equally special cake. 
               What began as a heartfelt passion for homemade confectionery has grown into a beloved local cake studio in 
               Hemmathagama and Thalgaspitiya. We hand-craft custom cakes for birthdays, weddings, anniversaries, bridal showers, 
@@ -97,13 +97,13 @@ export function AboutSection() {
             </p>
 
             {/* 4 Feature Pillars Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {brandPillars.map((pillar) => {
                 const Icon = pillar.icon;
                 return (
                   <div
                     key={pillar.title}
-                    className="p-4 rounded-2xl bg-[#fffbf7] border border-rose-100 hover:border-rose-300 transition-colors shadow-xs"
+                    className="p-3.5 sm:p-4 rounded-2xl bg-[#fffbf7] border border-rose-100 hover:border-rose-300 transition-colors shadow-xs"
                   >
                     <div className="flex items-center gap-2.5 mb-2">
                       <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">

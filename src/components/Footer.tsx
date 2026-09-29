@@ -19,7 +19,7 @@ export function Footer() {
   return (
     <footer className="bg-[#fff6f0] border-t border-rose-200/80 pt-12 sm:pt-16 pb-10 sm:pb-12 relative overflow-hidden text-rose-950">
       <div className="max-w-6xl mx-auto px-4 sm:px-5">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-rose-200/60">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 pb-8 sm:pb-12 border-b border-rose-200/60">
           {/* Col 1: Brand Info */}
           <div className="md:col-span-5">
             <div className="flex items-center gap-3 mb-4">
@@ -136,8 +136,8 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-rose-700/80 gap-3">
-          <p className="flex items-center gap-1">
+        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-rose-700/80 gap-3 text-center sm:text-left">
+          <p className="flex items-center justify-center sm:justify-start gap-1">
             © {new Date().getFullYear()} FS Cake Gallery. Made with love, for your sweet moments ♡
           </p>
 
