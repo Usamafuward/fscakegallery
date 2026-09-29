@@ -8,6 +8,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { AboutSection } from "@/components/AboutSection";
 import { SpecialtiesSection } from "@/components/SpecialtiesSection";
 import { GallerySection } from "@/components/GallerySection";
+import { ReviewsSection } from "@/components/ReviewsSection";
 import { ContactSection } from "@/components/ContactSection";
 import { OrderModal } from "@/components/OrderModal";
 import { PosterModal } from "@/components/PosterModal";
@@ -67,7 +68,10 @@ export default function Home() {
           onSelectCake={(cake) => handleOpenOrder(cake)}
         />
 
-        {/* 5. Contact Section & Direct WhatsApp Order Generator */}
+        {/* 5. Customer Testimonials & Reviews */}
+        <ReviewsSection onOrderNow={() => handleOpenOrder()} />
+
+        {/* 6. Contact Section & Direct WhatsApp Order Generator */}
         <ContactSection />
       </main>
 

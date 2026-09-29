@@ -83,6 +83,11 @@ export function Footer() {
                   Gourmet Floral Cupcake Boxes
                 </a>
               </li>
+              <li>
+                <a href="#reviews" className="hover:text-rose-600 transition-colors">
+                  Customer Reviews
+                </a>
+              </li>
             </ul>
           </div>
 

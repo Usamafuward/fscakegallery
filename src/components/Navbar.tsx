@@ -3,7 +3,13 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import { Phone, Heart, Menu, X, MessageCircle, Sparkles } from "lucide-react";
+import {
+  Phone,
+  Heart,
+  Menu,
+  X,
+  Sparkles,
+} from "lucide-react";
 import { CONTACT_INFO } from "@/data/cakes";
 
 interface NavbarProps {
@@ -27,7 +33,8 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
     { name: "About", href: "#about" },
     { name: "Specialties", href: "#specialties" },
     { name: "Gallery", href: "#gallery" },
-    { name: "Contact & Delivery", href: "#contact" },
+    { name: "Reviews", href: "#reviews" },
+    { name: "Contact", href: "#contact" },
   ];
 
   return (
@@ -36,12 +43,12 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "py-2.5 bg-white/90 backdrop-blur-md border-b border-rose-100 shadow-[0_4px_20px_rgba(244,114,182,0.12)]"
+        scrolled || mobileMenuOpen
+          ? "py-2.5 bg-white/95 backdrop-blur-md border-b border-rose-100 shadow-[0_4px_20px_rgba(244,114,182,0.12)]"
           : "py-4 bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-5 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-5 flex items-center justify-between relative z-50">
         {/* Brand Logo & Name */}
         <a
           href="#hero"
@@ -93,7 +100,7 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
           ))}
         </nav>
 
-        {/* Action Button: Order on WhatsApp / Call */}
+        {/* Desktop Action Buttons: Phone & Order */}
         <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
           <a
             href={`tel:${CONTACT_INFO.phone1}`}
@@ -125,7 +132,7 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
           </motion.button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl bg-white/90 border border-rose-200 text-rose-900 hover:bg-rose-50 transition-colors cursor-pointer touch-manipulation"
+            className="p-2 rounded-xl bg-white/90 border border-rose-200 text-rose-900 hover:bg-rose-50 transition-colors cursor-pointer touch-manipulation shadow-2xs"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -133,55 +140,61 @@ export function Navbar({ onOpenOrder }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Minimal Mobile Dropdown Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="md:hidden border-b border-rose-100 bg-white/95 backdrop-blur-xl px-5 py-4 overflow-hidden shadow-xl"
-          >
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => {
-                    setMobileMenuOpen(false);
-                    if (link.href === "#hero") {
-                      e.preventDefault();
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }
-                  }}
-                  className="text-xs font-bold uppercase tracking-wider text-rose-900 hover:text-rose-600 py-2.5 px-3 rounded-xl hover:bg-rose-50 transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
-              <div className="pt-3 mt-1 border-t border-rose-100 flex flex-col gap-2">
-                <a
-                  href={`https://wa.me/${CONTACT_INFO.whatsappNumber}?text=Hello%20FS%20Cake%20Gallery,%20I%20would%20like%20to%20order%20a%20cake!`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2.5 rounded-xl text-center text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Order on WhatsApp ({CONTACT_INFO.phone1})
-                </a>
+          <>
+            {/* Backdrop overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="md:hidden fixed inset-0 top-0 bg-black/20 backdrop-blur-xs z-40"
+            />
+
+            {/* Minimal Dropdown Panel */}
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="md:hidden absolute top-full left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-rose-100 shadow-[0_16px_36px_rgba(244,114,182,0.14)] px-4 py-3"
+            >
+              <nav className="flex flex-col space-y-0.5">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => {
+                      setMobileMenuOpen(false);
+                      if (link.href === "#hero") {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }
+                    }}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold tracking-wide text-rose-950 hover:text-rose-600 hover:bg-rose-50/80 active:bg-rose-100/60 transition-colors"
+                  >
+                    <span>{link.name}</span>
+                  </a>
+                ))}
+              </nav>
+
+              <div className="pt-2.5 mt-1.5 border-t border-rose-100">
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     onOpenOrder();
                   }}
-                  className="w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider brush-btn-pink text-white text-center shadow-sm cursor-pointer"
+                  className="w-full brush-btn-pink py-2.5 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-xs cursor-pointer flex items-center justify-center gap-1.5 active:scale-98 transition-transform"
                 >
-                  Custom Order Form
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Order Custom Cake</span>
                 </button>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.header>
